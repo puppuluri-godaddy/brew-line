@@ -2,27 +2,31 @@ import heapq
 
 def findMatch(json_input):
 
-    currentDB = fetchDB()   # a dictionary with Key as Hobbies and Value as list of User's (who like that hobby)
-
     current_user, current_interests = json_input['user'], json_input['interests']
+
+    addToDB(json_input)                    # add the current users data to DB
+
+    currentDB = fetchDB(current_interests)   # a dictionary with Key as Hobbies and Value as list of User's (who like that hobby)
 
     matchDB = dict()
 
     for interest in current_interests:
 
-        if not currentDB.get(interest, 0):
+        if not currentDB[interest]:
             
             currentDB[interest] = [current_user]
 
         else:
 
-            #loop throught interest's values
+            #loop through interest's values
             for user in currentDB[interest]:
 
                 matchDB[user] = matchDB.get(user, 0) + 1
 
             currentDB[interest].append(current_user)
 
+    # Update the Database
+    updateDB(currentDB)
 
     # matchDB now has the user-match count
     # using matchDB to return top N matches
