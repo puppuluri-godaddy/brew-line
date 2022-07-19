@@ -1,0 +1,26 @@
+{
+  "name": "brew-line",
+  "version": "1.0.0",
+  "description": "Slackbot for meeting coworkers",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/puppuluri-godaddy/brew-line.git"
+  },
+  "author": "Basheer, Dhruval, Monisha, Preeti, Raghuram, Tingting",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/puppuluri-godaddy/brew-line/issues"
+  },
+  "homepage": "https://github.com/puppuluri-godaddy/brew-line#readme",
+  "dependencies": {
+    "@slack/bolt": "^3.12.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.1",
+    "nodemon": "^2.0.19"
+  }
+}
