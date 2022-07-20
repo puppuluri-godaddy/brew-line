@@ -1,13 +1,19 @@
-const mongoose = require("mongoose");
-mongoose.connect(
-    "mongodb+srv://brewline:RQMC7IAsUW87Pt8S@cluster0.vr2kyfe.mongodb.net/?retryWrites=true&w=majority"
-);
-console.log("connected");
-const userSchema = new mongoose.Schema({
-    userId:String,
-    interests:[String]
+const mongoose=require('mongoose');
+
+const userSchema=new mongoose.Schema({
+    user_id:{
+        type: String,
+        required: true,
+        unique: true
+    },
+    interests:{
+        type: Array,
+        required: true
+    }
+},{
+    timestamps: true
 });
 
-const User = mongoose.model("User", userSchema);
+const User=mongoose.model('User',userSchema);
 
-module.exports = User;
+module.exports=User;

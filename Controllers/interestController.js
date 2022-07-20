@@ -10,7 +10,3 @@ module.exports.fetchInterests = async function(interests){
     
     return userAndInterests;
 }
-
-module.exports.updateInterets = function(user){
-    return;
-}
