@@ -2,7 +2,7 @@
   "name": "brew-line",
   "version": "1.0.0",
   "description": "Slackbot for meeting coworkers",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js"
   },
