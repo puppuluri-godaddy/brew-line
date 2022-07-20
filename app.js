@@ -17,7 +17,7 @@ const app = new App({
 
 let channel_id;
 let user;
-let match;
+let match = 'Bob';
 let matchPart;
 let userInterestArray = [];
 let displayBlocks;
@@ -50,9 +50,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
         userInterestArray =  await userController.getUserinfo(user);  // it is a string array, may be empty
         console.log('user interest: '+ userInterestArray);
         if (await userInterestArray.length !== 0){
-            console.log('0');
-            match = await findMatch(user);  // call getMatch Function
-            console.log('1');
+            match = 'fake name'  // call getMatch Function
             matchPart = displayMatch(match);
             displayBlocks = updateInterests(homeBlocks, userInterestArray);
             const { interests, results } = updateInterestResult(userInterestArray);
@@ -75,7 +73,8 @@ app.action("submit_button", async ({ event, body, client, ack }) => {
     await ack();
 
     const dataToSave = processData(interests, user);
-    match = await findMatch(dataToSave);
+    // match = await findMatch(dataToSave);
+    match = 'new one'
  
     matchersInterests = await userController.getUserinfo(match);
     console.log('get matcherInterests: '+ matchersInterests);
@@ -94,15 +93,16 @@ app.action("find_button", async ({ event, body, client, ack }) => {
     let { results, interests } = updateInterestResult(userInterestArray);
     userInterestArray = interests;
     const result = publishHome(user, client, [...displayBlocks, results, matchButton, matchPart]);
+ 
     let msg1 = generateMsg(user, matchersInterests, match);
     let msg2 = generateMsg(match, userInterestArray, user);
     await publishMessage(channel_id, msg1);
     await publishMessage(match, msg2);
+    
 }); 
 
 // Post a message to a channel your app is in using ID and message text
 async function publishMessage(id, text) {
-    console.log('try to send message: '+ id);
     try {
       // Call the chat.postMessage method using the built-in WebClient
       const result = await app.client.chat.postMessage({

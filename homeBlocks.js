@@ -1,7 +1,7 @@
 
-const userController = require('./Controllers/interestController');
-const interestData = await userController.getAllInterests(); 
-// const interestData = ['Fishing', 'Coding', 'New Grad',"Texting","Coding","Reading", "Cooking"]; // all data
+// const interestController = require('./Controllers/interestController');
+// const interestData = await interestController.getAllInterests(); 
+const interestData = ['Fishing', 'Coding', 'New Grad',"Texting","Coding","Reading", "Cooking"]; // all data
 
 
 function getOptions(array) {
@@ -83,7 +83,7 @@ const homeBlocks =
             },
             "label": {
                 "type": "plain_text",
-                "text": "What are your interests?",
+                "text": "Hey! We love how you want to meet new people! We want you to pick your interests, hobbies, career goals or anything you would like to learn about from this list below..",
                 "emoji": true
             }
         },
