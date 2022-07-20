@@ -61,6 +61,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
 
             matchPart = await displayMatch(match);
             console.log('match: '+ match);
+
             displayBlocks = updateInterests(homeBlocks, userInterestArray);
        
             const { interests, results } = updateInterestResult(userInterestArray, false);
@@ -84,6 +85,7 @@ app.action("submit_button", async ({ event, body, client, ack }) => {
     await ack();
 
     const dataToSave = processData(interests, user);
+
     // at this time, user has chosen some interests and we need to save its data into db
     // and also return the match list
     let resultJson = await findMatch(dataToSave, true)

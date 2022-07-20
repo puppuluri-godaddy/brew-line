@@ -3,26 +3,29 @@ const interestController = require("./Controllers/interestController");
 
 module.exports.findMatch = async function(json_input, bool){
 
+
     var current_user = json_input['user'];
     var current_interests = json_input['interests'];
-
     var currentDB = await interestController.fetchInterests(current_interests);
+
     if (bool){
         console.log('need save data'+ current_interests);
         console.log('need save data'+ current_user);
         await userController.createUpdateUser(json_input);
     }
        
+    await userController.createUpdateUser(json_input);
 
-    var matchDB = {};
 
+    var matchDB = {}
     for (const interest of current_interests){
-        
+
         if ( currentDB[interest] == []){
             continue;
         }
 
         else{
+
             if (Object.keys(currentDB).includes(interest)){
                 for (const user of currentDB[interest]){
 
@@ -32,11 +35,13 @@ module.exports.findMatch = async function(json_input, bool){
                     else{
                         matchDB[user] = 1;
                     }
+
                 }
 
             }
         }
     }
+
 
 //checkgit
     // var similar_users = [];
@@ -48,17 +53,18 @@ module.exports.findMatch = async function(json_input, bool){
 
         if (most_similar_user_cnt < matchDB[user] && user !== current_user){
 
+
             most_similar_user = user;
-            most_similar_user_cnt = matchDB[user];
+            most_similar_users_cnt = matchDB[user];
         }
 
     }
-
-
     var most_similar_user_interests = await userController.getUserinfo(most_similar_user);
+    console.log(most_similar_user_interests);
 
     const filteredArray = current_interests.filter(value => most_similar_user_interests.includes(value))
   
 
     return {"similar_user": most_similar_user, "similar_interests": filteredArray};
 }
+
