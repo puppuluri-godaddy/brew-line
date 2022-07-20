@@ -55,4 +55,3 @@ def findMatch(json_input):
         most_similar_users.append(user)
 
     return {"Output" : most_similar_users}
-
