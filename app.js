@@ -1,6 +1,4 @@
 const { App } = require("@slack/bolt");
-const matchUser = require('./match');
-const { spawn } = require('child_process');
 const { homeBlocks, getOptions, updateInterestResult, processData, publishHome, matchButton, displayMatch, updateInterests } = require('./homeBlocks');
 const userController = require('./Controllers/userController');
 const db = require('./config/mongoose');
@@ -23,12 +21,11 @@ let userInterestArray = [];
 let matchersInterests;
 let chosenInterest;
 
-let currentUserZoom;
-let matchZoom = 'testing';
-let currentUserSchedule;
-let matchSchedule = true;
+// let currentUserZoom;
+// let matchZoom = 'testing';
+// let currentUserSchedule;
+// let matchSchedule = true;
 
-const [displayBlocks, setDisplayBlocks] = useState(homeBlocks);
 
 app.command("/test", async ({ command, ack, say }) => {
     try {
@@ -138,46 +135,45 @@ async function publishMessage(id, text) {
     }
   }
 
-  app.message('https://godaddy.zoom.us', async ({ message, say }) => {
-    // say() sends a message to the channel where the event was triggered
-    currentUserZoom = message.message;
+//   app.message('https://godaddy.zoom.us', async ({ message, say }) => {
+//     // say() sends a message to the channel where the event was triggered
+//     currentUserZoom = message.message;
     
+//     await say({
+//       blocks: [
+//         {
+//           "type": "section",
+//           "text": {
+//             "type": "mrkdwn",
+//             "text": `Hey there <@${message.user}>! Thanks for sending the zoom link!`
+//           },
+//           "accessory": {
+//             "type": "button",
+//             "text": {
+//               "type": "plain_text",
+//               "text": "Schecule an meeting"
+//             },
+//             "action_id": "button_click"
+//           }
+//         }
+//       ],
+//       text: `Hey there <@${message.user}>!`
+//     });
+//   });
 
-    await say({
-      blocks: [
-        {
-          "type": "section",
-          "text": {
-            "type": "mrkdwn",
-            "text": `Hey there <@${message.user}>! Thanks for sending the zoom link!`
-          },
-          "accessory": {
-            "type": "button",
-            "text": {
-              "type": "plain_text",
-              "text": "Schecule an meeting"
-            },
-            "action_id": "button_click"
-          }
-        }
-      ],
-      text: `Hey there <@${message.user}>!`
-    });
-  });
+//   app.action('button_click', async ({ body, ack, say }) => {
+//     // Acknowledge the action
+//     await ack();
+//     currentUserSchedule = true;
+//     if (matchSchedule && matchZoom)
+//         await publishMessage(user, getLinks(match, matchZoom));
 
-  app.action('button_click', async ({ body, ack, say }) => {
-    // Acknowledge the action
-    await ack();
-    currentUserSchedule = true;
-    if (matchSchedule && matchZoom)
-        await publishMessage(user, getLinks(match, matchZoom));
+//     await say(`<@${body.user.id}> Good choice  `);
+//   });
 
-    await say(`<@${body.user.id}> Good choice  `);
-  });
-
-function getLinks(userId, zoomLink){
-    return "Here is the zoom link of <@" + userId + ">" + zoomLink;
-}
+// function getLinks(userId, zoomLink){
+//     return "Here is the zoom link of <@" + userId + ">" + zoomLink;
+// }
   
 
 
