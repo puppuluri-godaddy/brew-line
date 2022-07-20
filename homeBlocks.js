@@ -1,5 +1,8 @@
-const interestData = ['Fishing', 'Coding', 'New Grad']; // all data
-const userOptions = []; // user specific 
+
+const userController = require('./Controllers/interestController');
+const interestData = await userController.getAllInterests(); 
+// const interestData = ['Fishing', 'Coding', 'New Grad',"Texting","Coding","Reading", "Cooking"]; // all data
+
 
 function getOptions(array) {
     let options = [];

@@ -1,6 +1,10 @@
 const { App } = require("@slack/bolt");
+const matchUser = require('./match');
 const { spawn } = require('child_process');
 const { homeBlocks, getOptions, updateInterestResult, processData, publishHome, matchButton, displayMatch, updateInterests } = require('./homeBlocks');
+const userController = require('./Controllers/userController');
+const db = require('./config/mongoose');
+const {findMatch} = require('./match');
 
 require("dotenv").config();
 // Initializes your app with your bot token and signing secret
@@ -17,6 +21,7 @@ let match;
 let matchPart;
 let userInterestArray = [];
 let displayBlocks;
+let matchersInterests;
 
 app.command("/test", async ({ command, ack, say }) => {
     try {
@@ -29,19 +34,25 @@ app.command("/test", async ({ command, ack, say }) => {
 });
 
 
+
 app.event("app_home_opened", async ({ event, client, context }) => {
     try {
         console.log("Home tab of app has now been opened!");
         channel_id = event.channel;
         user = event.user;
         let displayBlocks = homeBlocks;
+        console.log(user);
         // TODO: 
         // check if user is already in the database, if yes, homeBlock need update data,
         // otherwise, display default homeBlock data
         // use external selection component
-        userInterestArray = ['Fishing']; // getInfo(user);  // it is a string array, may be empty
-        if (userInterestArray.length !== 0){
-            match = 'Fake name from db';   // call getMatch Function
+
+        userInterestArray =  await userController.getUserinfo(user);  // it is a string array, may be empty
+        console.log('user interest: '+ userInterestArray);
+        if (await userInterestArray.length !== 0){
+            console.log('0');
+            match = await findMatch(user);  // call getMatch Function
+            console.log('1');
             matchPart = displayMatch(match);
             displayBlocks = updateInterests(homeBlocks, userInterestArray);
             const { interests, results } = updateInterestResult(userInterestArray);
@@ -56,8 +67,6 @@ app.event("app_home_opened", async ({ event, client, context }) => {
     }
 });
 
-// let match;
-
 app.action("submit_button", async ({ event, body, client, ack }) => {
     let choices = body.view.state.values.multi_interest_select_block['multi_static_select-action'].selected_options
     let { results, interests } = updateInterestResult(choices, true);
@@ -66,17 +75,18 @@ app.action("submit_button", async ({ event, body, client, ack }) => {
     await ack();
 
     const dataToSave = processData(interests, user);
-    // match = findMatch(dataToSave);
-    match = 'Fake name after click';
-
-    // const pythonProcess = spawn('python',["./process.py", dataToSave]);
-    // pythonProcess.stdout.on('data', function(data) {
-    //     console.log(JSON.stringify(data));
-
-    // });
+    match = await findMatch(dataToSave);
+ 
+    matchersInterests = await userController.getUserinfo(match);
+    console.log('get matcherInterests: '+ matchersInterests);
     
     const result = publishHome(user, client, [...displayBlocks, results, matchButton]);
 });
+
+function generateMsg(userId, interestArray, matchId){
+    const ans = "Congraduataions, :tada:,"+userId+". We foud someone who is as amazing as you:" + matchId+". There is the interest List: "+ interestArray;
+    return ans;
+}
 
 app.action("find_button", async ({ event, body, client, ack }) => {
     await ack();
@@ -84,7 +94,34 @@ app.action("find_button", async ({ event, body, client, ack }) => {
     let { results, interests } = updateInterestResult(userInterestArray);
     userInterestArray = interests;
     const result = publishHome(user, client, [...displayBlocks, results, matchButton, matchPart]);
-});
+    let msg1 = generateMsg(user, matchersInterests, match);
+    let msg2 = generateMsg(match, userInterestArray, user);
+    await publishMessage(channel_id, msg1);
+    await publishMessage(match, msg2);
+}); 
+
+// Post a message to a channel your app is in using ID and message text
+async function publishMessage(id, text) {
+    console.log('try to send message: '+ id);
+    try {
+      // Call the chat.postMessage method using the built-in WebClient
+      const result = await app.client.chat.postMessage({
+        // The token you used to initialize your app
+        token: process.env.SLACK_BOT_TOKEN,
+        channel: id,
+        text: text
+        // You could also use a blocks[] array to send richer content
+      });
+  
+      // Print result, which includes information about the message (like TS)
+    //   console.log(result);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+  
+
 
 (async () => {
     const port = 3000
