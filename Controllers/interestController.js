@@ -10,3 +10,20 @@ module.exports.fetchInterests = async function(interests){
     
     return userAndInterests;
 }
+
+module.exports.getAllInterests = async function(){
+    const interestObjects = await Interest.find({});
+    const interests=[];
+    interestObjects.forEach((interestObject)=>{
+        interests.push(interestObject.interest);
+    })
+    return interests;
+}
+
+module.exports.addInterest = async function(interest){
+    await Interest.create({
+        interest:interest,
+        users:[]
+    });
+    return;
+}
