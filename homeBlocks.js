@@ -1,12 +1,35 @@
 
 // const interestController = require('./Controllers/interestController');
 // const interestData = await interestController.getAllInterests(); 
-const interestData = ['Fishing', 'Coding', 'New Grad',"Texting","Coding","Reading", "Cooking"]; // all data
+// const interestData = ['Fishing', 'Coding', 'New Grad',"Texting","Coding","Reading", "Cooking"]; // all data
+let homeBlocks;
+let hardcoding = [
+    'Texting',       'Coding',        'Reading',
+    'Cricket',       'Cooking',       'Traveling',
+    'Fishing',       'Crafting',      'Television',
+    'Collecting',    'Music',         'Gardening',
+    'Yoga',          'Backpacking',   'Hunting',
+    'Kayaking',      'Experimenting', 'Beat Boxing',
+    'Shopping',      'Picnicing',     'Martial arts',
+    'Farming',       'Swimming',      'Skiing',
+    'Film Making',   'Streaming',     'Gaming',
+    'Video Editing', 'Writing',       'Ice Skating',
+    'Home Brewing',  'Modeling',      'Playing',
+    'Camping',       'Tennis',        'Bird Watching',
+    'Bee Keeping',   'Badminton',     'New Grad'
+  ];
 
 
 function getOptions(array) {
+
+    // try{
+    //   array = await interestController.getAllInterests(); 
+    // } catch(err){
+    //     console.log(err);
+    // }
+    // console.log(array);
     let options = [];
-    array.map((item)=>{
+    array.forEach((item)=>{
         options.push(
             {
                 "text": {
@@ -64,7 +87,7 @@ async function publishHome(user, client, blocks) {
     return result
 };
 
-const homeBlocks =
+ homeBlocks =
     /* body of the view */
     [
         {
@@ -78,7 +101,7 @@ const homeBlocks =
                     "text": "Select interests",
                     "emoji": true
                 },
-                "options": getOptions(interestData),
+                "options": getOptions(hardcoding),
                 "action_id": "multi_static_select-action"
             },
             "label": {
@@ -133,10 +156,13 @@ function displayMatch(match){
 
 }
 
-function updateInterests(homeBlocks = '', interestArray){
+function updateInterests(homeBlocks, interestArray){
     const newOptions = getOptions(interestArray);
-    homeBlocks[0].element = { ...homeBlocks[0].element, "initial_options": newOptions };
-    return homeBlocks;
+
+    let ans = [...homeBlocks];
+    ans[0].element = { ...homeBlocks[0].element, "initial_options": newOptions };
+
+    return ans;
 
 }
 

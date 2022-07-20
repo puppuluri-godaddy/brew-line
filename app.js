@@ -22,6 +22,7 @@ let matchPart;
 let userInterestArray = [];
 let displayBlocks;
 let matchersInterests;
+let chosenInterest;
 
 app.command("/test", async ({ command, ack, say }) => {
     try {
@@ -32,6 +33,8 @@ app.command("/test", async ({ command, ack, say }) => {
         console.error(error);
     }
 });
+
+
 
 
 
@@ -48,12 +51,18 @@ app.event("app_home_opened", async ({ event, client, context }) => {
         // use external selection component
 
         userInterestArray =  await userController.getUserinfo(user);  // it is a string array, may be empty
-        console.log('user interest: '+ userInterestArray);
+        console.log(userInterestArray);
+
         if (await userInterestArray.length !== 0){
-            match = 'fake name'  // call getMatch Function
-            matchPart = displayMatch(match);
+            const dataToSave = processData(userInterestArray, user);
+            let resultJson = await findMatch(dataToSave, false);
+            match = resultJson.similar_user ;
+
+            matchPart = await displayMatch(match);
+            console.log('match: '+ match);
             displayBlocks = updateInterests(homeBlocks, userInterestArray);
-            const { interests, results } = updateInterestResult(userInterestArray);
+       
+            const { interests, results } = updateInterestResult(userInterestArray, false);
             displayBlocks = [...displayBlocks, results, matchButton, matchPart];
         }
         
@@ -68,34 +77,36 @@ app.event("app_home_opened", async ({ event, client, context }) => {
 app.action("submit_button", async ({ event, body, client, ack }) => {
     let choices = body.view.state.values.multi_interest_select_block['multi_static_select-action'].selected_options
     let { results, interests } = updateInterestResult(choices, true);
+    chosenInterest = results;
     userInterestArray = interests;
     displayBlocks = updateInterests(homeBlocks, userInterestArray);
     await ack();
 
     const dataToSave = processData(interests, user);
+
     // match = await findMatch(dataToSave);
-    match = 'new one'
+    let resultJson = await findMatch(dataToSave, true)
+    match = resultJson.similar_user ;
  
-    matchersInterests = await userController.getUserinfo(match);
+    matchersInterests = resultJson.similar_interests;
     console.log('get matcherInterests: '+ matchersInterests);
+    const newBlock = [...displayBlocks, chosenInterest, matchButton];
     
-    const result = publishHome(user, client, [...displayBlocks, results, matchButton]);
+    const result = publishHome(user, client, newBlock );
 });
 
 function generateMsg(userId, interestArray, matchId){
-    const ans = "Congraduataions, :tada:,"+userId+". We foud someone who is as amazing as you:" + matchId+". There is the interest List: "+ interestArray;
+    const ans = "Congraduataions, :tada:,"+userId+". We foud someone who is as amazing as you:" + matchId+". There is your common interest list: "+ interestArray;
     return ans;
 }
 
 app.action("find_button", async ({ event, body, client, ack }) => {
     await ack();
     matchPart = displayMatch(match);
-    let { results, interests } = updateInterestResult(userInterestArray);
-    userInterestArray = interests;
-    const result = publishHome(user, client, [...displayBlocks, results, matchButton, matchPart]);
+    const result = publishHome(user, client, [...displayBlocks, chosenInterest, matchButton, matchPart]);
  
     let msg1 = generateMsg(user, matchersInterests, match);
-    let msg2 = generateMsg(match, userInterestArray, user);
+    let msg2 = generateMsg(match, matchersInterests, user);
     await publishMessage(channel_id, msg1);
     await publishMessage(match, msg2);
     
