@@ -37,7 +37,7 @@ function findMatch(json_input){
     for (const user of matchDB.keys()){
 
         if (similar_users.length < top_matches){
-            
+
         }
 
     }
