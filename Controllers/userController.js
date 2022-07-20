@@ -31,7 +31,10 @@ module.exports.createUpdateUser = async function (user) {
             await User.findOneAndUpdate({user_id:user.user},existingUser);
         }
         else {
-            await User.create(user);
+            const userObj = {};
+            userObj.user_id=user.user;
+            userObj.interests=user.interests;
+            await User.create(userObj);
         }
         const interests = user.interests;
         for(const interest of interests){
