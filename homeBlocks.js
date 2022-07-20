@@ -16,11 +16,37 @@ let hardcoding = [
     'Video Editing', 'Writing',       'Ice Skating',
     'Home Brewing',  'Modeling',      'Playing',
     'Camping',       'Tennis',        'Bird Watching',
-    'Bee Keeping',   'Badminton',     'New Grad'
+    'Bee Keeping',   'Badminton',     'New Grad',
+    'Running',       'Jogging',       'Insgram',
+    'Ice cream',     'Stamp',         'Dogs',
+    'Cats',          'Candies',       'Soccer',
+    'Volleyball',    'Rugby',         'Roller skating',
+    'Darts',         'Football',      'Stretching',
+    'Gymnastics',    'Rock climbing', 'Surfing' ,
+    'Dancing',       'Karate',        'BJJ' , 
+    'Horse racing',  'Snowboarding',  'Skateboarding', 
+    'Cycling',       'Novels',        'Science',
+    'Food',          'Music',         'Painting', 
+    'Coffee Lover',  'Cleaning',      'Chocolate Lover', 
+    'Walking',       'Kickboxing',    'Board games', 
+    'Hiking',        'Bowling',       'Juggling', 
+    'Oil painting',  'Color painting',  'Designing', 
+    'Poetry writing',  'Web dev', 'Java', 
+    'Python', 'Technology', 'Cameras', 
+    'Driving', 'Beer', 'Wine',
+    'Parties', 'Animal Lovers', 
+    'Salad', 'Meat', 'Washing', 
+    'Biking', 'Sunshine', 'California', 
+    'Tempe', 'Seattle', 'Interns', 
+    'Manager', 'Software Engineer', 
+    'Product manager', 'UX design',
+    'Recruiter', 'HR', 'IT guy', 
+    'Acting', 'San Francisco' , ' Los Angeles', 
+    'New York City', 'Boston', 'MENA', 
+    'Bay Area', 'Santa Clara',
   ];
-
-
-function getOptions(array) {
+  
+  function getOptions(array) {
 
     // try{
     //   array = await interestController.getAllInterests(); 
@@ -106,7 +132,7 @@ async function publishHome(user, client, blocks) {
             },
             "label": {
                 "type": "plain_text",
-                "text": "Hey! We love how you want to meet new people! We want you to pick your interests, hobbies, career goals or anything you would like to learn about from this list below..",
+                "text": "Hey! We love how you want to meet new people! We want you to pick your interests, hobbies, career goals or a thing you would like to learn about from this list below..",
                 "emoji": true
             }
         },
@@ -149,7 +175,7 @@ function displayMatch(match){
         "type": "section",
         "text": {
             "type": "plain_text",
-            "text": `${match} is your perfect match`,
+            "text": `Check your Brewline inbox :eyes: we guessed who would've waved at you if you were in the office kitchen`,
             "emoji": true
         }
     };

@@ -20,9 +20,15 @@ let user;
 let match = 'Bob';
 let matchPart;
 let userInterestArray = [];
-let displayBlocks;
 let matchersInterests;
 let chosenInterest;
+
+let currentUserZoom;
+let matchZoom = 'testing';
+let currentUserSchedule;
+let matchSchedule = true;
+
+const [displayBlocks, setDisplayBlocks] = useState(homeBlocks);
 
 app.command("/test", async ({ command, ack, say }) => {
     try {
@@ -35,23 +41,20 @@ app.command("/test", async ({ command, ack, say }) => {
 });
 
 
-
-
-
 app.event("app_home_opened", async ({ event, client, context }) => {
     try {
         console.log("Home tab of app has now been opened!");
         channel_id = event.channel;
         user = event.user;
         let displayBlocks = homeBlocks;
-        console.log(user);
+        console.log("username=> "+ user);
         // TODO: 
         // check if user is already in the database, if yes, homeBlock need update data,
         // otherwise, display default homeBlock data
         // use external selection component
 
         userInterestArray =  await userController.getUserinfo(user);  // it is a string array, may be empty
-        console.log(userInterestArray);
+        console.log("user interest from db: "+ userInterestArray);
 
         if (await userInterestArray.length !== 0){
             const dataToSave = processData(userInterestArray, user);
@@ -60,7 +63,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
             match = resultJson.similar_user ;
 
             matchPart = await displayMatch(match);
-            console.log('match: '+ match);
+            console.log('Your match: '+ match);
 
             displayBlocks = updateInterests(homeBlocks, userInterestArray);
        
@@ -99,7 +102,7 @@ app.action("submit_button", async ({ event, body, client, ack }) => {
 });
 
 function generateMsg(userId, interestArray, matchId){
-    const ans = "Congraduataions, :tada:,"+userId+". We foud someone who is as amazing as you:" + matchId+". There is your common interest list: "+ interestArray;
+    const ans = "Hey <@" + userId + ">! Did you know that <@" + matchId + "> also likes talking about "+ interestArray +"! if you have time paste your meeting link below, otherwise tell them what time your next break is :grimacing:";
     return ans;
 }
 
@@ -134,6 +137,47 @@ async function publishMessage(id, text) {
       console.error(error);
     }
   }
+
+  app.message('https://godaddy.zoom.us', async ({ message, say }) => {
+    // say() sends a message to the channel where the event was triggered
+    currentUserZoom = message.message;
+    
+
+    await say({
+      blocks: [
+        {
+          "type": "section",
+          "text": {
+            "type": "mrkdwn",
+            "text": `Hey there <@${message.user}>! Thanks for sending the zoom link!`
+          },
+          "accessory": {
+            "type": "button",
+            "text": {
+              "type": "plain_text",
+              "text": "Schecule an meeting"
+            },
+            "action_id": "button_click"
+          }
+        }
+      ],
+      text: `Hey there <@${message.user}>!`
+    });
+  });
+
+  app.action('button_click', async ({ body, ack, say }) => {
+    // Acknowledge the action
+    await ack();
+    currentUserSchedule = true;
+    if (matchSchedule && matchZoom)
+        await publishMessage(user, getLinks(match, matchZoom));
+
+    await say(`<@${body.user.id}> Good choice  `);
+  });
+
+function getLinks(userId, zoomLink){
+    return "Here is the zoom link of <@" + userId + ">" + zoomLink;
+}
   
 
 
