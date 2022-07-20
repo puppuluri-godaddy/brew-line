@@ -55,6 +55,7 @@ app.event("app_home_opened", async ({ event, client, context }) => {
 
         if (await userInterestArray.length !== 0){
             const dataToSave = processData(userInterestArray, user);
+            // just want to get the name of the match, no need to save data
             let resultJson = await findMatch(dataToSave, false);
             match = resultJson.similar_user ;
 
@@ -83,8 +84,8 @@ app.action("submit_button", async ({ event, body, client, ack }) => {
     await ack();
 
     const dataToSave = processData(interests, user);
-
-    // match = await findMatch(dataToSave);
+    // at this time, user has chosen some interests and we need to save its data into db
+    // and also return the match list
     let resultJson = await findMatch(dataToSave, true)
     match = resultJson.similar_user ;
  
